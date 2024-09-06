@@ -46,6 +46,15 @@ class _CompleteFormState extends State<CompleteForm> {
             skipDisabled: true,
             child: Column(
               children: <Widget>[
+                const SizedBox(height: 8),
+                createFormBuilderSlider(_onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderRangeSlider(_formKey, _onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderCheckBox(_onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderTextField(_ageHasError, _formKey, setState),
+                const SizedBox(height: 8),
                 const SizedBox(height: 15),
                 FormBuilderDateTimePicker(
                   name: 'date',
@@ -62,7 +71,6 @@ class _CompleteFormState extends State<CompleteForm> {
                     ),
                   ),
                   initialTime: const TimeOfDay(hour: 8, minute: 0),
-                  //locale: const Locale.fromSubtags(languageCode: 'fr'),
                 ),
                 const SizedBox(height: 8),
                 FormBuilderDateRangePicker(
@@ -84,104 +92,6 @@ class _CompleteFormState extends State<CompleteForm> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                FormBuilderSlider(
-                  name: 'slider',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.min(6),
-                  ]),
-                  onChanged: _onChanged,
-                  min: 0.0,
-                  max: 10.0,
-                  initialValue: 7.0,
-                  divisions: 20,
-                  activeColor: Colors.red,
-                  inactiveColor: Colors.pink[100],
-                  decoration: const InputDecoration(
-                    labelText: 'Number of things',
-                  ),
-                ),
-                const SizedBox(height: 8),
-                FormBuilderRangeSlider(
-                  name: 'range_slider',
-                  onChanged: _onChanged,
-                  min: 0.0,
-                  max: 100.0,
-                  initialValue: const RangeValues(4, 7),
-                  divisions: 20,
-                  maxValueWidget: (max) => TextButton(
-                    onPressed: () {
-                      _formKey.currentState?.patchValue(
-                        {'range_slider': const RangeValues(4, 100)},
-                      );
-                    },
-                    child: Text(max),
-                  ),
-                  activeColor: Colors.red,
-                  inactiveColor: Colors.pink[100],
-                  decoration: const InputDecoration(labelText: 'Price Range'),
-                ),
-                const SizedBox(height: 8),
-                FormBuilderCheckbox(
-                  name: 'accept_terms',
-                  initialValue: false,
-                  onChanged: _onChanged,
-                  title: RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'I have read and agree to the ',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: 'Terms and Conditions',
-                          style: TextStyle(color: Colors.blue),
-                          // Flutter doesn't allow a button inside a button
-                          // https://github.com/flutter/flutter/issues/31437#issuecomment-492411086
-                          /*
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              print('launch url');
-                            },
-                          */
-                        ),
-                      ],
-                    ),
-                  ),
-                  validator: FormBuilderValidators.equal(
-                    true,
-                    errorText:
-                    'You must accept terms and conditions to continue',
-                  ),
-                ),
-                const SizedBox(height: 8),
-                FormBuilderTextField(
-                  autovalidateMode: AutovalidateMode.always,
-                  name: 'age',
-                  decoration: InputDecoration(
-                    labelText: 'Age',
-                    suffixIcon: _ageHasError
-                        ? const Icon(Icons.error, color: Colors.red)
-                        : const Icon(Icons.check, color: Colors.green),
-                  ),
-                  onChanged: (val) {
-                    setState(() {
-                      _ageHasError =
-                      !(_formKey.currentState?.fields['age']?.validate() ??
-                          false);
-                    });
-                  },
-                  // valueTransformer: (text) => num.tryParse(text),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.max(70),
-                  ]),
-                  // initialValue: '12',
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 8),
                 FormBuilderDropdown<String>(
                   name: 'gender',
                   decoration: InputDecoration(
@@ -195,16 +105,16 @@ class _CompleteFormState extends State<CompleteForm> {
                       [FormBuilderValidators.required()]),
                   items: genderOptions
                       .map((gender) => DropdownMenuItem(
-                    alignment: AlignmentDirectional.center,
-                    value: gender,
-                    child: Text(gender),
-                  ))
+                            alignment: AlignmentDirectional.center,
+                            value: gender,
+                            child: Text(gender),
+                          ))
                       .toList(),
                   onChanged: (val) {
                     setState(() {
                       _genderHasError = !(_formKey
-                          .currentState?.fields['gender']
-                          ?.validate() ??
+                              .currentState?.fields['gender']
+                              ?.validate() ??
                           false);
                     });
                   },
@@ -222,19 +132,14 @@ class _CompleteFormState extends State<CompleteForm> {
                       [FormBuilderValidators.required()]),
                   options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
                       .map((lang) => FormBuilderFieldOption(
-                    value: lang,
-                    child: Text(lang),
-                  ))
+                            value: lang,
+                            child: Text(lang),
+                          ))
                       .toList(growable: false),
                   controlAffinity: ControlAffinity.trailing,
                 ),
                 const SizedBox(height: 8),
-                FormBuilderSwitch(
-                  title: const Text('I Accept the terms and conditions'),
-                  name: 'accept_terms_switch',
-                  initialValue: true,
-                  onChanged: _onChanged,
-                ),
+                createFormBuilderSwitch(_onChanged),
                 const SizedBox(height: 8),
                 FormBuilderCheckboxGroup<String>(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -300,7 +205,7 @@ class _CompleteFormState extends State<CompleteForm> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                       labelText:
-                      'Ok, if I had to choose one language, it would be:'),
+                          'Ok, if I had to choose one language, it would be:'),
                   name: 'languages_choice',
                   initialValue: 'Dart',
                   options: const [
@@ -362,6 +267,110 @@ class _CompleteFormState extends State<CompleteForm> {
     );
   }
 }
+
+FormBuilderSlider createFormBuilderSlider(onChanged) {
+  return FormBuilderSlider(
+    name: 'slider',
+    validator: FormBuilderValidators.compose([
+      FormBuilderValidators.min(6),
+    ]),
+    onChanged: onChanged,
+    min: 0.0,
+    max: 10.0,
+    initialValue: 7.0,
+    divisions: 20,
+    activeColor: Colors.red,
+    inactiveColor: Colors.pink[100],
+    decoration: const InputDecoration(
+      labelText: 'Number of things',
+    ),
+  );
+}
+
+FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
+  return FormBuilderRangeSlider(
+    name: 'range_slider',
+    onChanged: onChanged,
+    min: 0.0,
+    max: 100.0,
+    initialValue: const RangeValues(4, 7),
+    divisions: 20,
+    maxValueWidget: (max) => TextButton(
+      onPressed: () {
+        formKey.currentState?.patchValue(
+          {'range_slider': const RangeValues(4, 100)},
+        );
+      },
+      child: Text(max),
+    ),
+    activeColor: Colors.red,
+    inactiveColor: Colors.pink[100],
+    decoration: const InputDecoration(labelText: 'Price Range'),
+  );
+}
+
+FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
+  return FormBuilderCheckbox(
+    name: 'accept_terms',
+    initialValue: false,
+    onChanged: onChanged,
+    title: RichText(
+      text: const TextSpan(
+        children: [
+          TextSpan(
+            text: 'I have read and agree to the ',
+            style: TextStyle(color: Colors.black),
+          ),
+          TextSpan(
+            text: 'Terms and Conditions',
+            style: TextStyle(color: Colors.blue),
+          ),
+        ],
+      ),
+    ),
+    validator: FormBuilderValidators.equal(
+      true,
+      errorText: 'You must accept terms and conditions to continue',
+    ),
+  );
+}
+
+FormBuilderTextField createFormBuilderTextField(
+    ageHasError, formKey, setState) {
+  return FormBuilderTextField(
+    autovalidateMode: AutovalidateMode.always,
+    name: 'age',
+    decoration: InputDecoration(
+      labelText: 'Age',
+      suffixIcon: ageHasError
+          ? const Icon(Icons.error, color: Colors.red)
+          : const Icon(Icons.check, color: Colors.green),
+    ),
+    onChanged: (val) {
+      setState(() {
+        ageHasError =
+            !(formKey.currentState?.fields['age']?.validate() ?? false);
+      });
+    },
+    validator: FormBuilderValidators.compose([
+      FormBuilderValidators.required(),
+      FormBuilderValidators.numeric(),
+      FormBuilderValidators.max(70),
+    ]),
+    keyboardType: TextInputType.number,
+    textInputAction: TextInputAction.next,
+  );
+}
+
+FormBuilderSwitch createFormBuilderSwitch(onChanged) {
+  return FormBuilderSwitch(
+    title: const Text('I Accept the terms and conditions'),
+    name: 'accept_terms_switch',
+    initialValue: true,
+    onChanged: onChanged,
+  );
+}
+
 /*
 FormBuilderCheckboxGroup(),
 FormBuilderChoiceChip(),

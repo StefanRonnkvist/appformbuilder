@@ -17,7 +17,7 @@ class _CompleteFormState extends State<CompleteForm> {
   bool readOnly = false;
   bool showSegmentedControl = true;
   final _formKey = GlobalKey<FormBuilderState>();
-  bool _ageHasError = false;
+  final bool _ageHasError = false;
   bool _genderHasError = false;
 
   var genderOptions = ['Male', 'Female', 'Other'];
@@ -55,7 +55,45 @@ class _CompleteFormState extends State<CompleteForm> {
                 const SizedBox(height: 8),
                 createFormBuilderTextField(_ageHasError, _formKey, setState),
                 const SizedBox(height: 8),
+                createFormBuilderSwitch(_onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderChoiceChip(_onChanged),
                 const SizedBox(height: 15),
+                createFormBuilderFilterChip(_onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderCheckboxGroup(_onChanged),
+                const SizedBox(height: 8),
+                createFormBuilderRadioGroup(_onChanged),
+                const SizedBox(height: 8),
+                FormBuilderDropdown<String>(
+                  name: 'gender',
+                  decoration: InputDecoration(
+                    labelText: 'Gender',
+                    suffix: _genderHasError
+                        ? const Icon(Icons.error)
+                        : const Icon(Icons.check),
+                    hintText: 'Select Gender',
+                  ),
+                  validator: FormBuilderValidators.compose(
+                      [FormBuilderValidators.required()]),
+                  items: genderOptions
+                      .map((gender) => DropdownMenuItem(
+                            alignment: AlignmentDirectional.center,
+                            value: gender,
+                            child: Text(gender),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _genderHasError = !(_formKey
+                              .currentState?.fields['gender']
+                              ?.validate() ??
+                          false);
+                    });
+                  },
+                  valueTransformer: (val) => val?.toString(),
+                ),
+                const SizedBox(height: 8),
                 FormBuilderDateTimePicker(
                   name: 'date',
                   initialEntryMode: DatePickerEntryMode.calendar,
@@ -92,146 +130,7 @@ class _CompleteFormState extends State<CompleteForm> {
                     ),
                   ),
                 ),
-                FormBuilderDropdown<String>(
-                  name: 'gender',
-                  decoration: InputDecoration(
-                    labelText: 'Gender',
-                    suffix: _genderHasError
-                        ? const Icon(Icons.error)
-                        : const Icon(Icons.check),
-                    hintText: 'Select Gender',
-                  ),
-                  validator: FormBuilderValidators.compose(
-                      [FormBuilderValidators.required()]),
-                  items: genderOptions
-                      .map((gender) => DropdownMenuItem(
-                            alignment: AlignmentDirectional.center,
-                            value: gender,
-                            child: Text(gender),
-                          ))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _genderHasError = !(_formKey
-                              .currentState?.fields['gender']
-                              ?.validate() ??
-                          false);
-                    });
-                  },
-                  valueTransformer: (val) => val?.toString(),
-                ),
                 const SizedBox(height: 8),
-                FormBuilderRadioGroup<String>(
-                  decoration: const InputDecoration(
-                    labelText: 'My chosen language',
-                  ),
-                  initialValue: null,
-                  name: 'best_language',
-                  onChanged: _onChanged,
-                  validator: FormBuilderValidators.compose(
-                      [FormBuilderValidators.required()]),
-                  options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
-                      .map((lang) => FormBuilderFieldOption(
-                            value: lang,
-                            child: Text(lang),
-                          ))
-                      .toList(growable: false),
-                  controlAffinity: ControlAffinity.trailing,
-                ),
-                const SizedBox(height: 8),
-                createFormBuilderSwitch(_onChanged),
-                const SizedBox(height: 8),
-                FormBuilderCheckboxGroup<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                      labelText: 'The language of my people'),
-                  name: 'languages',
-                  // initialValue: const ['Dart'],
-                  options: const [
-                    FormBuilderFieldOption(value: 'Dart'),
-                    FormBuilderFieldOption(value: 'Kotlin'),
-                    FormBuilderFieldOption(value: 'Java'),
-                    FormBuilderFieldOption(value: 'Swift'),
-                    FormBuilderFieldOption(value: 'Objective-C'),
-                  ],
-                  onChanged: _onChanged,
-                  separator: const VerticalDivider(
-                    width: 10,
-                    thickness: 5,
-                    color: Colors.red,
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.minLength(1),
-                    FormBuilderValidators.maxLength(3),
-                  ]),
-                ),
-                const SizedBox(height: 8),
-                FormBuilderFilterChip<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                      labelText: 'The language of my people'),
-                  name: 'languages_filter',
-                  selectedColor: Colors.red,
-                  options: const [
-                    FormBuilderChipOption(
-                      value: 'Dart',
-                      avatar: CircleAvatar(child: Text('D')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Kotlin',
-                      avatar: CircleAvatar(child: Text('K')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Java',
-                      avatar: CircleAvatar(child: Text('J')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Swift',
-                      avatar: CircleAvatar(child: Text('S')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Objective-C',
-                      avatar: CircleAvatar(child: Text('O')),
-                    ),
-                  ],
-                  onChanged: _onChanged,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.minLength(1),
-                    FormBuilderValidators.maxLength(3),
-                  ]),
-                ),
-                const SizedBox(height: 8),
-                FormBuilderChoiceChip<String>(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                      labelText:
-                          'Ok, if I had to choose one language, it would be:'),
-                  name: 'languages_choice',
-                  initialValue: 'Dart',
-                  options: const [
-                    FormBuilderChipOption(
-                      value: 'Dart',
-                      avatar: CircleAvatar(child: Text('D')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Kotlin',
-                      avatar: CircleAvatar(child: Text('K')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Java',
-                      avatar: CircleAvatar(child: Text('J')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Swift',
-                      avatar: CircleAvatar(child: Text('S')),
-                    ),
-                    FormBuilderChipOption(
-                      value: 'Objective-C',
-                      avatar: CircleAvatar(child: Text('O')),
-                    ),
-                  ],
-                  onChanged: _onChanged,
-                ),
               ],
             ),
           ),
@@ -368,6 +267,150 @@ FormBuilderSwitch createFormBuilderSwitch(onChanged) {
     name: 'accept_terms_switch',
     initialValue: true,
     onChanged: onChanged,
+  );
+}
+
+FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
+  return FormBuilderChoiceChip<String>(
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    decoration: const InputDecoration(
+        labelText: 'Ok, if I had to choose one language, it would be:'),
+    name: 'languages_choice',
+    initialValue: 'Dart',
+    options: const [
+      FormBuilderChipOption(
+        value: 'Dart',
+        avatar: CircleAvatar(child: Text('D')),
+      ),
+      FormBuilderChipOption(
+        value: 'Kotlin',
+        avatar: CircleAvatar(child: Text('K')),
+      ),
+      FormBuilderChipOption(
+        value: 'Java',
+        avatar: CircleAvatar(child: Text('J')),
+      ),
+      FormBuilderChipOption(
+        value: 'Swift',
+        avatar: CircleAvatar(child: Text('S')),
+      ),
+      FormBuilderChipOption(
+        value: 'Objective-C',
+        avatar: CircleAvatar(child: Text('O')),
+      ),
+    ],
+    onChanged: onChanged,
+  );
+}
+
+FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
+  return FormBuilderFilterChip<String>(
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    decoration: const InputDecoration(labelText: 'The language of my people'),
+    name: 'languages_filter',
+    selectedColor: Colors.red,
+    options: const [
+      FormBuilderChipOption(
+        value: 'Darting',
+        avatar: CircleAvatar(child: Text('D')),
+      ),
+      FormBuilderChipOption(
+        value: 'Kotlin',
+        avatar: CircleAvatar(child: Text('K')),
+      ),
+      FormBuilderChipOption(
+        value: 'Java',
+        avatar: CircleAvatar(child: Text('J')),
+      ),
+      FormBuilderChipOption(
+        value: 'Swift',
+        avatar: CircleAvatar(child: Text('S')),
+      ),
+      FormBuilderChipOption(
+        value: 'Objective-C',
+        avatar: CircleAvatar(child: Text('O')),
+      ),
+    ],
+    onChanged: onChanged,
+    validator: FormBuilderValidators.compose([
+      FormBuilderValidators.minLength(1),
+      FormBuilderValidators.maxLength(3),
+    ]),
+  );
+}
+
+FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(onChanged) {
+  return FormBuilderCheckboxGroup<String>(
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    decoration: const InputDecoration(labelText: 'The language of my people'),
+    name: 'languages',
+    initialValue: const ['Dart'],
+    options: const [
+      FormBuilderFieldOption(value: 'Dart'),
+      FormBuilderFieldOption(value: 'Kotlin'),
+      FormBuilderFieldOption(value: 'Java'),
+      FormBuilderFieldOption(value: 'Swift'),
+      FormBuilderFieldOption(value: 'Objective-C'),
+    ],
+    onChanged: onChanged,
+    separator: const VerticalDivider(
+      width: 10,
+      thickness: 5,
+      color: Colors.red,
+    ),
+    validator: FormBuilderValidators.compose([
+      FormBuilderValidators.minLength(1),
+      FormBuilderValidators.maxLength(3),
+    ]),
+  );
+}
+
+FormBuilderRadioGroup createFormBuilderRadioGroup(onChanged) {
+  return FormBuilderRadioGroup<String>(
+    decoration: const InputDecoration(
+      labelText: 'My chosen language',
+    ),
+    initialValue: null,
+    name: 'best_language',
+    onChanged: onChanged,
+    validator:
+        FormBuilderValidators.compose([FormBuilderValidators.required()]),
+    options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
+        .map((lang) => FormBuilderFieldOption(
+              value: lang,
+              child: Text(lang),
+            ))
+        .toList(growable: false),
+    controlAffinity: ControlAffinity.trailing,
+  );
+}
+
+FormBuilderDropdown createFormBuilderDropdown(
+    genderHasError, genderOptions, setState, formKey) {
+  return FormBuilderDropdown<String>(
+    name: 'gender',
+    decoration: InputDecoration(
+      labelText: 'Gender',
+      suffix:
+          genderHasError ? const Icon(Icons.error) : const Icon(Icons.check),
+      hintText: 'Select Gender',
+    ),
+    validator:
+        FormBuilderValidators.compose([FormBuilderValidators.required()]),
+    items: genderOptions
+        .map((gender) => DropdownMenuItem(
+              alignment: AlignmentDirectional.center,
+              value: gender,
+              child: Text(gender),
+            ))
+        .toList(),
+    onChanged: (val) {
+      setState(() {
+        genderHasError =
+            !(formKey.currentState?.fields['gender']?.validate() ?? false);
+      });
+    },
+    valueTransformer: (val) => val?.toString(),
   );
 }
 

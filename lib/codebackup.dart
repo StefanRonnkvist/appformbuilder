@@ -20,13 +20,39 @@ class _CompleteFormState extends State<CompleteForm> {
   final bool _ageHasError = false;
   bool _genderHasError = false;
 
-  var genderOptions = ['Male', 'Female', 'Other'];
+  var genderOptions = [
+    'Male',
+    'Female',
+    'Rainbow gender',
+    'Bisexual',
+    'Pansexual',
+    'Nonbinary',
+    'Transgender',
+    'Asexual',
+    'Intersex',
+    'Gay Man',
+    'Lesbian',
+    'Polysexual',
+    'Agender',
+    'Androgyne',
+    'Genderfluid',
+    'Genderqueer',
+    'Neutrois',
+    'Omnisexual',
+    'Aromantic',
+    'Demisexual',
+    'Demiromantic',
+    'Polyamorous',
+    'Straight ally',
+    'Other',
+  ];
 
   void _onChanged(dynamic val) => debugPrint(val.toString());
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return
+      SingleChildScrollView(
       child: Column(
         children: <Widget>[
           FormBuilder(
@@ -37,10 +63,9 @@ class _CompleteFormState extends State<CompleteForm> {
             },
             autovalidateMode: AutovalidateMode.disabled,
             initialValue: const {
-              'movie_rating': 5,
               'best_language': 'Dart',
-              'age': '13',
-              'gender': 'Male',
+              'age': '21',
+              'gender': 'Straight ally',
               'languages_filter': ['Dart']
             },
             skipDisabled: true,
@@ -57,14 +82,15 @@ class _CompleteFormState extends State<CompleteForm> {
                 const SizedBox(height: 8),
                 createFormBuilderSwitch(_onChanged),
                 const SizedBox(height: 8),
-                createFormBuilderChoiceChip(_onChanged),
-                const SizedBox(height: 15),
                 createFormBuilderFilterChip(_onChanged),
                 const SizedBox(height: 8),
                 createFormBuilderCheckboxGroup(_onChanged),
                 const SizedBox(height: 8),
                 createFormBuilderRadioGroup(_onChanged),
                 const SizedBox(height: 8),
+                createFormBuilderChoiceChip(_onChanged),
+                const SizedBox(height: 8),
+                //createFormBuilderDropdown(_genderHasError, genderOptions, setState, _formKey),
                 FormBuilderDropdown<String>(
                   name: 'gender',
                   decoration: InputDecoration(
@@ -155,7 +181,6 @@ class _CompleteFormState extends State<CompleteForm> {
                   onPressed: () {
                     _formKey.currentState?.reset();
                   },
-                  // color: Theme.of(context).colorScheme.secondary,
                   child: const Text('Reset'),
                 ),
               ),
@@ -166,7 +191,6 @@ class _CompleteFormState extends State<CompleteForm> {
     );
   }
 }
-
 FormBuilderSlider createFormBuilderSlider(onChanged) {
   return FormBuilderSlider(
     name: 'slider',
@@ -185,7 +209,6 @@ FormBuilderSlider createFormBuilderSlider(onChanged) {
     ),
   );
 }
-
 FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
   return FormBuilderRangeSlider(
     name: 'range_slider',
@@ -207,11 +230,10 @@ FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
     decoration: const InputDecoration(labelText: 'Price Range'),
   );
 }
-
 FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
   return FormBuilderCheckbox(
     name: 'accept_terms',
-    initialValue: false,
+    initialValue: true,
     onChanged: onChanged,
     title: RichText(
       text: const TextSpan(
@@ -233,7 +255,6 @@ FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
     ),
   );
 }
-
 FormBuilderTextField createFormBuilderTextField(
     ageHasError, formKey, setState) {
   return FormBuilderTextField(
@@ -260,7 +281,6 @@ FormBuilderTextField createFormBuilderTextField(
     textInputAction: TextInputAction.next,
   );
 }
-
 FormBuilderSwitch createFormBuilderSwitch(onChanged) {
   return FormBuilderSwitch(
     title: const Text('I Accept the terms and conditions'),
@@ -269,40 +289,42 @@ FormBuilderSwitch createFormBuilderSwitch(onChanged) {
     onChanged: onChanged,
   );
 }
-
 FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
   return FormBuilderChoiceChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(
         labelText: 'Ok, if I had to choose one language, it would be:'),
     name: 'languages_choice',
-    initialValue: 'Dart',
+    initialValue: 'English',
     options: const [
       FormBuilderChipOption(
-        value: 'Dart',
-        avatar: CircleAvatar(child: Text('D')),
+        value: 'English',
+        avatar: CircleAvatar(child: Text('E')),
       ),
       FormBuilderChipOption(
-        value: 'Kotlin',
-        avatar: CircleAvatar(child: Text('K')),
+        value: 'Mandarin',
+        avatar: CircleAvatar(child: Text('M')),
       ),
       FormBuilderChipOption(
-        value: 'Java',
-        avatar: CircleAvatar(child: Text('J')),
+        value: 'Hindi',
+        avatar: CircleAvatar(child: Text('H')),
       ),
       FormBuilderChipOption(
-        value: 'Swift',
+        value: 'Spanish',
         avatar: CircleAvatar(child: Text('S')),
       ),
       FormBuilderChipOption(
-        value: 'Objective-C',
-        avatar: CircleAvatar(child: Text('O')),
+        value: 'Arabic',
+        avatar: CircleAvatar(child: Text('A')),
+      ),
+      FormBuilderChipOption(
+        value: 'French',
+        avatar: CircleAvatar(child: Text('F')),
       ),
     ],
     onChanged: onChanged,
   );
 }
-
 FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
   return FormBuilderFilterChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -311,24 +333,28 @@ FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
     selectedColor: Colors.red,
     options: const [
       FormBuilderChipOption(
-        value: 'Darting',
-        avatar: CircleAvatar(child: Text('D')),
+        value: 'English',
+        avatar: CircleAvatar(child: Text('E')),
       ),
       FormBuilderChipOption(
-        value: 'Kotlin',
-        avatar: CircleAvatar(child: Text('K')),
+        value: 'Mandarin',
+        avatar: CircleAvatar(child: Text('M')),
       ),
       FormBuilderChipOption(
-        value: 'Java',
-        avatar: CircleAvatar(child: Text('J')),
+        value: 'Hindi',
+        avatar: CircleAvatar(child: Text('H')),
       ),
       FormBuilderChipOption(
-        value: 'Swift',
+        value: 'Spanish',
         avatar: CircleAvatar(child: Text('S')),
       ),
       FormBuilderChipOption(
-        value: 'Objective-C',
-        avatar: CircleAvatar(child: Text('O')),
+        value: 'Arabic',
+        avatar: CircleAvatar(child: Text('A')),
+      ),
+      FormBuilderChipOption(
+        value: 'French',
+        avatar: CircleAvatar(child: Text('F')),
       ),
     ],
     onChanged: onChanged,
@@ -338,19 +364,19 @@ FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
     ]),
   );
 }
-
 FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(onChanged) {
   return FormBuilderCheckboxGroup<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(labelText: 'The language of my people'),
     name: 'languages',
-    initialValue: const ['Dart'],
+    initialValue: const ['English'],
     options: const [
-      FormBuilderFieldOption(value: 'Dart'),
-      FormBuilderFieldOption(value: 'Kotlin'),
-      FormBuilderFieldOption(value: 'Java'),
-      FormBuilderFieldOption(value: 'Swift'),
-      FormBuilderFieldOption(value: 'Objective-C'),
+      FormBuilderFieldOption(value: 'English'),
+      FormBuilderFieldOption(value: 'Mandarin'),
+      FormBuilderFieldOption(value: 'Hindi'),
+      FormBuilderFieldOption(value: 'Spanish'),
+      FormBuilderFieldOption(value: 'Arabic'),
+      FormBuilderFieldOption(value: 'French'),
     ],
     onChanged: onChanged,
     separator: const VerticalDivider(
@@ -364,27 +390,25 @@ FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(onChanged) {
     ]),
   );
 }
-
 FormBuilderRadioGroup createFormBuilderRadioGroup(onChanged) {
   return FormBuilderRadioGroup<String>(
     decoration: const InputDecoration(
       labelText: 'My chosen language',
     ),
-    initialValue: null,
+    initialValue: 'English',
     name: 'best_language',
     onChanged: onChanged,
     validator:
         FormBuilderValidators.compose([FormBuilderValidators.required()]),
-    options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
+    options: ['English', 'Mandarin', 'Hindi', 'Spanish', 'Arabic', 'French']
         .map((lang) => FormBuilderFieldOption(
               value: lang,
               child: Text(lang),
             ))
         .toList(growable: false),
-    controlAffinity: ControlAffinity.trailing,
+    controlAffinity: ControlAffinity.leading,
   );
 }
-
 FormBuilderDropdown createFormBuilderDropdown(
     genderHasError, genderOptions, setState, formKey) {
   return FormBuilderDropdown<String>(
@@ -415,14 +439,7 @@ FormBuilderDropdown createFormBuilderDropdown(
 }
 
 /*
-FormBuilderCheckboxGroup(),
-FormBuilderChoiceChip(),
+FormBuilderDropdown(),
 FormBuilderDateRangePicker(),
 FormBuilderDateTimePicker(),
-FormBuilderDropdown(),
-FormBuilderFilterChip(),
-FormBuilderRadioGroup(),
-FormBuilderRangeSlider(),
-FormBuilderSlider(),
-FormBuilderSwitch(),
  */

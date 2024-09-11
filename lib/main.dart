@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-      home: const MyHomePage(title: 'Home page'),
+      home: const MyHomePage(title: 'FormBuilder'),
     );
   }
 }

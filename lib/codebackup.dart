@@ -20,7 +20,16 @@ class _CompleteFormState extends State<CompleteForm> {
   final bool _ageHasError = false;
   bool _genderHasError = false;
 
-  var genderOptions = [
+  List<String> languageOptions = [
+    'English',
+    'Mandarin',
+    'Hindi',
+    'Spanish',
+    'Arabic',
+    'French'
+  ];
+
+  List<String> genderOptions = [
     'Male',
     'Female',
     'Rainbow gender',
@@ -51,8 +60,7 @@ class _CompleteFormState extends State<CompleteForm> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           FormBuilder(
@@ -84,78 +92,18 @@ class _CompleteFormState extends State<CompleteForm> {
                 const SizedBox(height: 8),
                 createFormBuilderFilterChip(_onChanged),
                 const SizedBox(height: 8),
-                createFormBuilderCheckboxGroup(_onChanged),
+                createFormBuilderCheckboxGroup(_onChanged, languageOptions),
                 const SizedBox(height: 8),
-                createFormBuilderRadioGroup(_onChanged),
+                createFormBuilderRadioGroup(_onChanged, languageOptions),
                 const SizedBox(height: 8),
                 createFormBuilderChoiceChip(_onChanged),
                 const SizedBox(height: 8),
-                //createFormBuilderDropdown(_genderHasError, genderOptions, setState, _formKey),
-                FormBuilderDropdown<String>(
-                  name: 'gender',
-                  decoration: InputDecoration(
-                    labelText: 'Gender',
-                    suffix: _genderHasError
-                        ? const Icon(Icons.error)
-                        : const Icon(Icons.check),
-                    hintText: 'Select Gender',
-                  ),
-                  validator: FormBuilderValidators.compose(
-                      [FormBuilderValidators.required()]),
-                  items: genderOptions
-                      .map((gender) => DropdownMenuItem(
-                            alignment: AlignmentDirectional.center,
-                            value: gender,
-                            child: Text(gender),
-                          ))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _genderHasError = !(_formKey
-                              .currentState?.fields['gender']
-                              ?.validate() ??
-                          false);
-                    });
-                  },
-                  valueTransformer: (val) => val?.toString(),
-                ),
+                createFormBuilderDropdown(
+                    _genderHasError, genderOptions, setState, _formKey),
                 const SizedBox(height: 8),
-                FormBuilderDateTimePicker(
-                  name: 'date',
-                  initialEntryMode: DatePickerEntryMode.calendar,
-                  initialValue: DateTime.now(),
-                  inputType: InputType.both,
-                  decoration: InputDecoration(
-                    labelText: 'Appointment Time',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        _formKey.currentState!.fields['date']?.didChange(null);
-                      },
-                    ),
-                  ),
-                  initialTime: const TimeOfDay(hour: 8, minute: 0),
-                ),
+                createFormBuilderDateTimePicker(_formKey),
                 const SizedBox(height: 8),
-                FormBuilderDateRangePicker(
-                  name: 'date_range',
-                  firstDate: DateTime(1970),
-                  lastDate: DateTime(2030),
-                  format: DateFormat('yyyy-MM-dd'),
-                  onChanged: _onChanged,
-                  decoration: InputDecoration(
-                    labelText: 'Date Range',
-                    helperText: 'Helper text',
-                    hintText: 'Hint text',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        _formKey.currentState!.fields['date_range']
-                            ?.didChange(null);
-                      },
-                    ),
-                  ),
-                ),
+                createFormBuilderDateRangePicker(_onChanged, _formKey),
                 const SizedBox(height: 8),
               ],
             ),
@@ -191,6 +139,48 @@ class _CompleteFormState extends State<CompleteForm> {
     );
   }
 }
+
+FormBuilderDateRangePicker createFormBuilderDateRangePicker(onChanged, formKey){
+  return FormBuilderDateRangePicker(
+    name: 'date_range',
+    firstDate: DateTime(1970),
+    lastDate: DateTime(2030),
+    format: DateFormat('yyyy-MM-dd'),
+    onChanged: onChanged,
+    decoration: InputDecoration(
+      labelText: 'Date Range',
+      helperText: 'Helper text',
+      hintText: 'Hint text',
+      suffixIcon: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          formKey.currentState!.fields['date_range']
+              ?.didChange(null);
+        },
+      ),
+    ),
+  );
+}
+
+FormBuilderDateTimePicker createFormBuilderDateTimePicker(formKey){
+  return FormBuilderDateTimePicker(
+    name: 'date',
+    initialEntryMode: DatePickerEntryMode.calendar,
+    initialValue: DateTime.now(),
+    inputType: InputType.both,
+    decoration: InputDecoration(
+      labelText: 'Appointment Time',
+      suffixIcon: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          formKey.currentState!.fields['date']?.didChange(null);
+        },
+      ),
+    ),
+    initialTime: const TimeOfDay(hour: 8, minute: 0),
+  );
+}
+
 FormBuilderSlider createFormBuilderSlider(onChanged) {
   return FormBuilderSlider(
     name: 'slider',
@@ -200,7 +190,7 @@ FormBuilderSlider createFormBuilderSlider(onChanged) {
     onChanged: onChanged,
     min: 0.0,
     max: 10.0,
-    initialValue: 7.0,
+    initialValue: 5.0,
     divisions: 20,
     activeColor: Colors.red,
     inactiveColor: Colors.pink[100],
@@ -209,6 +199,7 @@ FormBuilderSlider createFormBuilderSlider(onChanged) {
     ),
   );
 }
+
 FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
   return FormBuilderRangeSlider(
     name: 'range_slider',
@@ -230,6 +221,7 @@ FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
     decoration: const InputDecoration(labelText: 'Price Range'),
   );
 }
+
 FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
   return FormBuilderCheckbox(
     name: 'accept_terms',
@@ -255,6 +247,7 @@ FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
     ),
   );
 }
+
 FormBuilderTextField createFormBuilderTextField(
     ageHasError, formKey, setState) {
   return FormBuilderTextField(
@@ -275,12 +268,14 @@ FormBuilderTextField createFormBuilderTextField(
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required(),
       FormBuilderValidators.numeric(),
-      FormBuilderValidators.max(70),
+      FormBuilderValidators.max(21),
+      FormBuilderValidators.min(18),
     ]),
     keyboardType: TextInputType.number,
     textInputAction: TextInputAction.next,
   );
 }
+
 FormBuilderSwitch createFormBuilderSwitch(onChanged) {
   return FormBuilderSwitch(
     title: const Text('I Accept the terms and conditions'),
@@ -289,6 +284,7 @@ FormBuilderSwitch createFormBuilderSwitch(onChanged) {
     onChanged: onChanged,
   );
 }
+
 FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
   return FormBuilderChoiceChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -325,6 +321,7 @@ FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
     onChanged: onChanged,
   );
 }
+
 FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
   return FormBuilderFilterChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -364,20 +361,21 @@ FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
     ]),
   );
 }
-FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(onChanged) {
+
+FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(
+    onChanged, List<String> languageOptions) {
   return FormBuilderCheckboxGroup<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(labelText: 'The language of my people'),
     name: 'languages',
-    initialValue: const ['English'],
-    options: const [
-      FormBuilderFieldOption(value: 'English'),
-      FormBuilderFieldOption(value: 'Mandarin'),
-      FormBuilderFieldOption(value: 'Hindi'),
-      FormBuilderFieldOption(value: 'Spanish'),
-      FormBuilderFieldOption(value: 'Arabic'),
-      FormBuilderFieldOption(value: 'French'),
-    ],
+    initialValue: const ['Hindi'],
+    options:
+      languageOptions
+        .map((lang) => FormBuilderFieldOption(
+              value: lang,
+              child: Text(lang),
+            ))
+        .toList(growable: false),
     onChanged: onChanged,
     separator: const VerticalDivider(
       width: 10,
@@ -390,7 +388,9 @@ FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(onChanged) {
     ]),
   );
 }
-FormBuilderRadioGroup createFormBuilderRadioGroup(onChanged) {
+
+FormBuilderRadioGroup createFormBuilderRadioGroup(
+    onChanged, List<String> languageOptions) {
   return FormBuilderRadioGroup<String>(
     decoration: const InputDecoration(
       labelText: 'My chosen language',
@@ -400,7 +400,7 @@ FormBuilderRadioGroup createFormBuilderRadioGroup(onChanged) {
     onChanged: onChanged,
     validator:
         FormBuilderValidators.compose([FormBuilderValidators.required()]),
-    options: ['English', 'Mandarin', 'Hindi', 'Spanish', 'Arabic', 'French']
+    options: languageOptions
         .map((lang) => FormBuilderFieldOption(
               value: lang,
               child: Text(lang),
@@ -409,8 +409,9 @@ FormBuilderRadioGroup createFormBuilderRadioGroup(onChanged) {
     controlAffinity: ControlAffinity.leading,
   );
 }
+
 FormBuilderDropdown createFormBuilderDropdown(
-    genderHasError, genderOptions, setState, formKey) {
+    genderHasError, List<String> genderOptions, setState, formKey) {
   return FormBuilderDropdown<String>(
     name: 'gender',
     decoration: InputDecoration(
@@ -437,9 +438,3 @@ FormBuilderDropdown createFormBuilderDropdown(
     valueTransformer: (val) => val?.toString(),
   );
 }
-
-/*
-FormBuilderDropdown(),
-FormBuilderDateRangePicker(),
-FormBuilderDateTimePicker(),
- */

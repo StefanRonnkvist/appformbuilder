@@ -18,7 +18,7 @@ class _CompleteFormState extends State<CompleteForm> {
   bool showSegmentedControl = true;
   final _formKey = GlobalKey<FormBuilderState>();
   final bool _ageHasError = false;
-  bool _genderHasError = false;
+  final bool _genderHasError = false;
 
   List<String> languageOptions = [
     'English',

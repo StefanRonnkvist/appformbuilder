@@ -26,7 +26,9 @@ class _CompleteFormState extends State<CompleteForm> {
     'Hindi',
     'Spanish',
     'Arabic',
-    'French'
+    'French',
+    'Swedish',
+    'Danish',
   ];
 
   List<String> genderOptions = [
@@ -71,10 +73,17 @@ class _CompleteFormState extends State<CompleteForm> {
             },
             autovalidateMode: AutovalidateMode.disabled,
             initialValue: const {
-              'best_language': 'Dart',
               'age': '21',
               'gender': 'Straight ally',
-              'languages_filter': ['Dart']
+              'best_language': 'French',
+              'languages_filter': ['Hindi', 'Arabic', 'Swedish'],
+              'languages_choice': 'English',
+              'languages': ['Spanish', 'Mandarin', 'Danish'],
+              'accept_terms_switch': true,
+              'accept_terms': true,
+              'range_slider': RangeValues(40, 80),
+              //'slider':5.0,
+              //'date': DateTime.now(),
             },
             skipDisabled: true,
             child: Column(
@@ -140,7 +149,8 @@ class _CompleteFormState extends State<CompleteForm> {
   }
 }
 
-FormBuilderDateRangePicker createFormBuilderDateRangePicker(onChanged, formKey){
+FormBuilderDateRangePicker createFormBuilderDateRangePicker(
+    onChanged, formKey) {
   return FormBuilderDateRangePicker(
     name: 'date_range',
     firstDate: DateTime(1970),
@@ -154,15 +164,14 @@ FormBuilderDateRangePicker createFormBuilderDateRangePicker(onChanged, formKey){
       suffixIcon: IconButton(
         icon: const Icon(Icons.close),
         onPressed: () {
-          formKey.currentState!.fields['date_range']
-              ?.didChange(null);
+          formKey.currentState!.fields['date_range']?.didChange(null);
         },
       ),
     ),
   );
 }
 
-FormBuilderDateTimePicker createFormBuilderDateTimePicker(formKey){
+FormBuilderDateTimePicker createFormBuilderDateTimePicker(formKey) {
   return FormBuilderDateTimePicker(
     name: 'date',
     initialEntryMode: DatePickerEntryMode.calendar,
@@ -190,7 +199,7 @@ FormBuilderSlider createFormBuilderSlider(onChanged) {
     onChanged: onChanged,
     min: 0.0,
     max: 10.0,
-    initialValue: 5.0,
+    initialValue: 5,
     divisions: 20,
     activeColor: Colors.red,
     inactiveColor: Colors.pink[100],
@@ -206,7 +215,6 @@ FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
     onChanged: onChanged,
     min: 0.0,
     max: 100.0,
-    initialValue: const RangeValues(4, 7),
     divisions: 20,
     maxValueWidget: (max) => TextButton(
       onPressed: () {
@@ -225,7 +233,6 @@ FormBuilderRangeSlider createFormBuilderRangeSlider(formKey, onChanged) {
 FormBuilderCheckbox createFormBuilderCheckBox(onChanged) {
   return FormBuilderCheckbox(
     name: 'accept_terms',
-    initialValue: true,
     onChanged: onChanged,
     title: RichText(
       text: const TextSpan(
@@ -280,7 +287,6 @@ FormBuilderSwitch createFormBuilderSwitch(onChanged) {
   return FormBuilderSwitch(
     title: const Text('I Accept the terms and conditions'),
     name: 'accept_terms_switch',
-    initialValue: true,
     onChanged: onChanged,
   );
 }
@@ -291,7 +297,6 @@ FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
     decoration: const InputDecoration(
         labelText: 'Ok, if I had to choose one language, it would be:'),
     name: 'languages_choice',
-    initialValue: 'English',
     options: const [
       FormBuilderChipOption(
         value: 'English',
@@ -316,6 +321,14 @@ FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
       FormBuilderChipOption(
         value: 'French',
         avatar: CircleAvatar(child: Text('F')),
+      ),
+      FormBuilderChipOption(
+        value: 'Swedish',
+        avatar: CircleAvatar(child: Text('S')),
+      ),
+      FormBuilderChipOption(
+        value: 'Danish',
+        avatar: CircleAvatar(child: Text('D')),
       ),
     ],
     onChanged: onChanged,
@@ -353,6 +366,14 @@ FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
         value: 'French',
         avatar: CircleAvatar(child: Text('F')),
       ),
+      FormBuilderChipOption(
+        value: 'Swedish',
+        avatar: CircleAvatar(child: Text('S')),
+      ),
+      FormBuilderChipOption(
+        value: 'Danish',
+        avatar: CircleAvatar(child: Text('D')),
+      ),
     ],
     onChanged: onChanged,
     validator: FormBuilderValidators.compose([
@@ -368,9 +389,7 @@ FormBuilderCheckboxGroup createFormBuilderCheckboxGroup(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(labelText: 'The language of my people'),
     name: 'languages',
-    initialValue: const ['Hindi'],
-    options:
-      languageOptions
+    options: languageOptions
         .map((lang) => FormBuilderFieldOption(
               value: lang,
               child: Text(lang),
@@ -395,7 +414,6 @@ FormBuilderRadioGroup createFormBuilderRadioGroup(
     decoration: const InputDecoration(
       labelText: 'My chosen language',
     ),
-    initialValue: 'English',
     name: 'best_language',
     onChanged: onChanged,
     validator:

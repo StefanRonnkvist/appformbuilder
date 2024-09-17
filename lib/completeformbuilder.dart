@@ -31,6 +31,17 @@ class _CompleteFormState extends State<CompleteForm> {
     'Danish',
   ];
 
+  Map<String, String> languageOptionsMap = {
+    'English': 'E',
+    'Mandarin': 'M',
+    'Hindi': 'H',
+    'Spanish': 'S',
+    'Arabic': 'A',
+    'French': 'F',
+    'Swedish': 'S',
+    'Danish': 'D',
+  };
+
   List<String> genderOptions = [
     'Male',
     'Female',
@@ -72,18 +83,18 @@ class _CompleteFormState extends State<CompleteForm> {
               debugPrint(_formKey.currentState!.value.toString());
             },
             autovalidateMode: AutovalidateMode.disabled,
-            initialValue: const {
+            initialValue: {
               'age': '21',
               'gender': 'Straight ally',
               'best_language': 'French',
-              'languages_filter': ['Hindi', 'Arabic', 'Swedish'],
+              'languages_filter': const ['Hindi', 'Arabic', 'Swedish'],
               'languages_choice': 'English',
-              'languages': ['Spanish', 'Mandarin', 'Danish'],
+              'languages': const ['Spanish', 'Mandarin', 'Danish'],
               'accept_terms_switch': true,
               'accept_terms': true,
-              'range_slider': RangeValues(40, 80),
-              //'slider':5.0,
-              //'date': DateTime.now(),
+              'range_slider': const RangeValues(40, 80),
+              'date': DateTime.now(),
+              //'date_range':DateTime.now(),
             },
             skipDisabled: true,
             child: Column(
@@ -99,13 +110,13 @@ class _CompleteFormState extends State<CompleteForm> {
                 const SizedBox(height: 8),
                 createFormBuilderSwitch(_onChanged),
                 const SizedBox(height: 8),
-                createFormBuilderFilterChip(_onChanged),
+                createFormBuilderFilterChip(_onChanged, languageOptionsMap),
                 const SizedBox(height: 8),
                 createFormBuilderCheckboxGroup(_onChanged, languageOptions),
                 const SizedBox(height: 8),
                 createFormBuilderRadioGroup(_onChanged, languageOptions),
                 const SizedBox(height: 8),
-                createFormBuilderChoiceChip(_onChanged),
+                createFormBuilderChoiceChip(_onChanged, languageOptionsMap),
                 const SizedBox(height: 8),
                 createFormBuilderDropdown(
                     _genderHasError, genderOptions, setState, _formKey),
@@ -175,7 +186,7 @@ FormBuilderDateTimePicker createFormBuilderDateTimePicker(formKey) {
   return FormBuilderDateTimePicker(
     name: 'date',
     initialEntryMode: DatePickerEntryMode.calendar,
-    initialValue: DateTime.now(),
+    //initialValue: DateTime.now(),
     inputType: InputType.both,
     decoration: InputDecoration(
       labelText: 'Appointment Time',
@@ -291,90 +302,36 @@ FormBuilderSwitch createFormBuilderSwitch(onChanged) {
   );
 }
 
-FormBuilderChoiceChip createFormBuilderChoiceChip(onChanged) {
+FormBuilderChoiceChip createFormBuilderChoiceChip(
+    onChanged, Map<String, String> languageOptionsMap) {
   return FormBuilderChoiceChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(
         labelText: 'Ok, if I had to choose one language, it would be:'),
     name: 'languages_choice',
-    options: const [
-      FormBuilderChipOption(
-        value: 'English',
-        avatar: CircleAvatar(child: Text('E')),
-      ),
-      FormBuilderChipOption(
-        value: 'Mandarin',
-        avatar: CircleAvatar(child: Text('M')),
-      ),
-      FormBuilderChipOption(
-        value: 'Hindi',
-        avatar: CircleAvatar(child: Text('H')),
-      ),
-      FormBuilderChipOption(
-        value: 'Spanish',
-        avatar: CircleAvatar(child: Text('S')),
-      ),
-      FormBuilderChipOption(
-        value: 'Arabic',
-        avatar: CircleAvatar(child: Text('A')),
-      ),
-      FormBuilderChipOption(
-        value: 'French',
-        avatar: CircleAvatar(child: Text('F')),
-      ),
-      FormBuilderChipOption(
-        value: 'Swedish',
-        avatar: CircleAvatar(child: Text('S')),
-      ),
-      FormBuilderChipOption(
-        value: 'Danish',
-        avatar: CircleAvatar(child: Text('D')),
-      ),
-    ],
+    options: languageOptionsMap.entries
+        .map((entry) => FormBuilderChipOption(
+              value: entry.key,
+              avatar: CircleAvatar(child: Text(entry.value)),
+            ))
+        .toList(growable: false),
     onChanged: onChanged,
   );
 }
 
-FormBuilderFilterChip createFormBuilderFilterChip(onChanged) {
+FormBuilderFilterChip createFormBuilderFilterChip(
+    onChanged, Map<String, String> languageOptionsMap) {
   return FormBuilderFilterChip<String>(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: const InputDecoration(labelText: 'The language of my people'),
     name: 'languages_filter',
     selectedColor: Colors.red,
-    options: const [
-      FormBuilderChipOption(
-        value: 'English',
-        avatar: CircleAvatar(child: Text('E')),
-      ),
-      FormBuilderChipOption(
-        value: 'Mandarin',
-        avatar: CircleAvatar(child: Text('M')),
-      ),
-      FormBuilderChipOption(
-        value: 'Hindi',
-        avatar: CircleAvatar(child: Text('H')),
-      ),
-      FormBuilderChipOption(
-        value: 'Spanish',
-        avatar: CircleAvatar(child: Text('S')),
-      ),
-      FormBuilderChipOption(
-        value: 'Arabic',
-        avatar: CircleAvatar(child: Text('A')),
-      ),
-      FormBuilderChipOption(
-        value: 'French',
-        avatar: CircleAvatar(child: Text('F')),
-      ),
-      FormBuilderChipOption(
-        value: 'Swedish',
-        avatar: CircleAvatar(child: Text('S')),
-      ),
-      FormBuilderChipOption(
-        value: 'Danish',
-        avatar: CircleAvatar(child: Text('D')),
-      ),
-    ],
+    options: languageOptionsMap.entries
+        .map((entry) => FormBuilderChipOption(
+              value: entry.key,
+              avatar: CircleAvatar(child: Text(entry.value)),
+            ))
+        .toList(growable: false),
     onChanged: onChanged,
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.minLength(1),

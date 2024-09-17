@@ -36,7 +36,7 @@ class MyHomePage extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(8.0),
             child: SizedBox(
-              width: 600,
+              width: 800,
               child: Column(
                 children: [
                   Text(
